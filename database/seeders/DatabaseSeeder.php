@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         User::factory()
-        ->count(10)
+        ->count(5)
         ->state(new Sequence(
             ['roles' => 'admin'],
             ['roles' => 'kasir'],
