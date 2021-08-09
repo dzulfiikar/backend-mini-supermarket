@@ -36,7 +36,5 @@ class UsersRoles
             'message' => 'You Are Not Logged In'
         ]);
         
-        // return $next($request);
-
     }
 }
