@@ -30,4 +30,6 @@ Route::middleware(['auth:api'])->group(function (){
         Route::put('admin/user/{id}', [UserController::class, 'update']);
         Route::delete('users/{id}', [UserController::class, 'destroy']);
     }); 
+
+    Route::post('/logout', [UsersAuthentication::class, 'logout']);
 });
