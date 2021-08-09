@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Products;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductsController extends Controller
 {
@@ -13,7 +15,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -59,5 +61,13 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function validateProductInputRequest(Request $request){
+        return Validator::make($request->all(), [
+            'product_name' => 'required|alpha_dash|unique:product_list,product_name|max:255',
+            'product_stock' => 'required|integer',
+            'product_price' => 'required|integer'
+        ]);
     }
 }
