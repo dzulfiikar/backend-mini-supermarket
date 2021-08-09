@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        return DB::table('product_list')->insert($this->productDataset());
+        return DB::table('product')->insert($this->productDataset());
     }
     
 
