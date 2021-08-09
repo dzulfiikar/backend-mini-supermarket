@@ -10,7 +10,6 @@ use Illuminate\Validation\Rules\Password;
 class UsersAuthentication extends Controller
 {
     function login(Request $request){
-
         $checkUserInput = $this->validateInputUser($request);
         if($checkUserInput->fails()){
             return response()->json([
