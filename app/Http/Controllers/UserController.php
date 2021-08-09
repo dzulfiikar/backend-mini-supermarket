@@ -108,6 +108,10 @@ class UserController extends Controller
             try {
                 $user_data->name = $array_data['name'];
                 $user_data->save();
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $user_data
+                ], 200);
             } catch (Exception $e) {
                 return response()->json([
                     'status' => 'failed',
@@ -120,6 +124,10 @@ class UserController extends Controller
             try {
                 $user_data->password = bcrypt($array_data['password']);
                 $user_data->save();
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $user_data
+                ], 200);
             } catch (Exception $e) {
                 return response()->json([
                     'status' => 'failed',
