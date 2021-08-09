@@ -59,8 +59,8 @@ class UserController extends Controller
         }catch(Exception $e){
             return response()->json([
                 'status' => 'failed',
-                'message' => $e
-            ], 500);
+                'data' => []
+            ], 408);
         }
     }
 
@@ -76,7 +76,8 @@ class UserController extends Controller
         if($user == null){
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Resource not found'
+                'message' => 'Resource not found',
+                'data' => []
             ], 404);
         }
 
@@ -99,7 +100,8 @@ class UserController extends Controller
         if($user_data == null){
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Resource Not Found'
+                'message' => 'Resource Not Found',
+                'data' => []
             ], 404);
         }
 
@@ -115,8 +117,8 @@ class UserController extends Controller
             } catch (Exception $e) {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => $e
-                ], 500);
+                    'data' => []
+                ], 408);
             }
         }
 
@@ -131,14 +133,15 @@ class UserController extends Controller
             } catch (Exception $e) {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => $e
-                ], 500);
+                    'data' => []
+                ], 408);
             }
         }
 
         return response()->json([
             'status' => 'failed',
-            'message' => 'Request Unknown'
+            'message' => 'Request Unknown',
+            'data' => []
         ], 400);
     }
 
@@ -154,7 +157,8 @@ class UserController extends Controller
         if($user == null){
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Resource Not Found'
+                'message' => 'Resource Not Found',
+                'data' => []
             ], 404);
         }
 
@@ -162,13 +166,14 @@ class UserController extends Controller
             $user->delete();
             return response()->json([
                 'status' => 'success',
-                'message' => 'User Has Been Deleted'
+                'message' => 'User Has Been Deleted',
+                'data' => []
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'status' => 'error',
-                'message' => "Internal Server Error"
-            ], 500);
+                'status' => 'failed',
+                'data' => []
+            ], 408);
         }
     }
 
