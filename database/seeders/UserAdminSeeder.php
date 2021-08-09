@@ -19,7 +19,7 @@ class UserAdminSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'UserA',
             'email' => 'usera123@gmail.com',
-            'password' => '$2y$10$jeiZWavSDcqKsyV9qSXQvei2Ou6zvjmtzBegUhRJ71KTLjrOLZnLq',
+            'password' => '$2a$12$FolESodM8w5wooPcdxvJF.O/Jiurj4taVFHwJRxhAgEyPv7I6bikC',
             'remember_token' => Str::random(10),
             'roles' => 'admin'
         ]);
