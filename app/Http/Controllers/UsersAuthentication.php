@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -9,15 +10,7 @@ use Illuminate\Validation\Rules\Password;
 
 class UsersAuthentication extends Controller
 {
-    function login(Request $request){
-        $checkUserInput = $this->validateInputUser($request);
-        if($checkUserInput->fails()){
-            return response()->json([
-                'status' => 'error',
-                'errors' => $checkUserInput->errors()->all()
-            ], 400);
-        }
-        
+    function login(UserLoginRequest $request){        
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = Auth::user();
             return response([
@@ -31,14 +24,25 @@ class UsersAuthentication extends Controller
             return response([
                 'status' => 'error',
                 'message' => 'Wrong Email or Password',
+                'data' => []
             ], 203);
         }
     }
 
-    private function validateInputUser(Request $request){
-        return Validator::make($request->all(), [
-            'email' => ['required', 'email'],
-            'password' => ['required', Password::min(8)->mixedCase()]
-        ]);
+    public function logout(){
+        if(Auth::check()){
+            $user = Auth::user()->token();
+            $user->revoke();
+            return response([
+                'status' => 'success',
+                'message' => 'Logout Successfully',
+                'data' => [],
+            ], 200);
+        }
+        return response([
+            'status' => 'error',
+            'message' => 'You are not logged in',
+            'data' => []
+        ], 401);
     }
 }

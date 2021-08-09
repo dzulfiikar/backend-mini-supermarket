@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -30,24 +32,10 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
-        $register_validation = Validator::make($request->all(),[
-            'name' => ['required'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()],
-            'password_confirmation' => ['required', 'same:password'],
-            'roles' => ['required', Rule::in(['admin', 'kasir', 'gudang'])]
-        ]);
-
-        if($register_validation->fails()){
-            return response()->json([
-                'status' => 'error',
-                'message' => $register_validation->errors()->all()
-            ], 401);
-        }
-
-        $data = $request->all();
+        
+        $data = $request->validated();
         $data['password'] = bcrypt($data['password']);
 
         try{
@@ -94,7 +82,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserUpdateRequest $request, $id)
     {
         $user_data = User::find($id);
         if($user_data == null){
@@ -105,7 +93,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        $array_data = $request->all();
+        $array_data = $request->validated();
         if(array_key_exists('name', $array_data)){
             try {
                 $user_data->name = $array_data['name'];
