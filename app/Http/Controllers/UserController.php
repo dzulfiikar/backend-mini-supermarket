@@ -48,7 +48,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'data' => []
-            ], 408);
+            ], 400);
         }
     }
 
@@ -106,7 +106,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'data' => []
-                ], 408);
+                ], 400);
             }
         }
 
@@ -122,7 +122,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'data' => []
-                ], 408);
+                ], 400);
             }
         }
 
@@ -161,7 +161,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'data' => []
-            ], 408);
+            ], 400);
         }
     }
 
