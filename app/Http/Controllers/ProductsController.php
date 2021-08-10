@@ -194,7 +194,7 @@ class ProductsController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'data' => []
-            ], 200);
+            ], 400);
         }
     }
 }
