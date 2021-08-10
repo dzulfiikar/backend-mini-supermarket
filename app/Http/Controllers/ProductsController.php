@@ -92,71 +92,20 @@ class ProductsController extends Controller
 
         $update_data = $request->validated();
 
-        if(array_key_exists('product_name', $update_data) && array_key_exists('product_stock', $update_data) && array_key_exists('product_price', $update_data)){
-            try {
-                $product->product_name = $update_data['product_name'];
-                $product->product_price = $update_data['product_price'];
-                $product->product_stock = $update_data['product_stock'];
-                $product->save();
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $product
-                ], 200);
-            } catch (Exception $e) {
-                return response()->json([
-                    'status' => 'failed',
-                    'data' => []
-                ], 400);
-            }
-        }
-
-
-        if(array_key_exists('product_name', $update_data)){
-            try {
-                $product->product_name = $update_data['product_name'];
-                $product->save();
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $product
-                ], 200);
-            } catch (Exception $e) {
-                return response()->json([
-                    'status' => 'failed',
-                    'data' => []
-                ], 400);
-            }
-        }
-
-        if(array_key_exists('product_stock', $update_data)){
-            try {
-                $product->product_stock = $update_data['product_stock'];
-                $product->save();
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $product
-                ], 200);
-            } catch (Exception $e) {
-                return response()->json([
-                    'status' => 'failed',
-                    'data' => []
-                ], 400);
-            }
-        }
-        
-        if(array_key_exists('product_price', $update_data)){
-            try {
-                $product->product_price = $update_data['product_price'];
-                $product->save();
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $product
-                ], 200);
-            } catch (Exception $e) {
-                return response()->json([
-                    'status' => 'failed',
-                    'data' => []
-                ], 400);
-            }
+        try {
+            $product->product_name = $update_data['product_name'];
+            $product->product_price = $update_data['product_price'];
+            $product->product_stock = $update_data['product_stock'];
+            $product->save();
+            return response()->json([
+                'status' => 'success',
+                'data' => $product
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'data' => []
+            ], 400);
         }
 
         return response()->json([
@@ -188,7 +137,8 @@ class ProductsController extends Controller
             $product->delete();
             return response()->json([
                 'status' => 'success',
-                'data' => $product
+                'message' => 'Product has been deleted',
+                'data' => []
             ], 200);
         } catch (Exception $e) {
             return response()->json([
