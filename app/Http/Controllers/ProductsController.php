@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductStoreRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Products;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,8 +17,11 @@ class ProductsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        
+    {   
+        return response()->json([
+            'status' => 'success',
+            'data' => Products::all()
+        ], 200);
     }
 
     /**
@@ -24,9 +30,22 @@ class ProductsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductStoreRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        try {
+            $product = Products::create($data);
+            return response()->json([
+                'status' => 'success',
+                'data' => $product
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'data' => []
+            ], 400);
+        }
     }
 
     /**
@@ -37,7 +56,20 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = Products::find($id);
+
+        if($product == null){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Resource not found',
+                'data' => []
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $product
+        ], 200);
     }
 
     /**
@@ -47,9 +79,92 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductUpdateRequest $request, $id)
     {
-        //
+        $product = Products::find($id);
+        if($product == null){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Resource not found',
+                'data' => []
+            ], 404);
+        }
+
+        $update_data = $request->validated();
+
+        if(array_key_exists('product_name', $update_data) && array_key_exists('product_stock', $update_data) && array_key_exists('product_price', $update_data)){
+            try {
+                $product->product_name = $update_data['product_name'];
+                $product->product_price = $update_data['product_price'];
+                $product->product_stock = $update_data['product_stock'];
+                $product->save();
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $product
+                ], 200);
+            } catch (Exception $e) {
+                return response()->json([
+                    'status' => 'failed',
+                    'data' => []
+                ], 400);
+            }
+        }
+
+
+        if(array_key_exists('product_name', $update_data)){
+            try {
+                $product->product_name = $update_data['product_name'];
+                $product->save();
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $product
+                ], 200);
+            } catch (Exception $e) {
+                return response()->json([
+                    'status' => 'failed',
+                    'data' => []
+                ], 400);
+            }
+        }
+
+        if(array_key_exists('product_stock', $update_data)){
+            try {
+                $product->product_stock = $update_data['product_stock'];
+                $product->save();
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $product
+                ], 200);
+            } catch (Exception $e) {
+                return response()->json([
+                    'status' => 'failed',
+                    'data' => []
+                ], 400);
+            }
+        }
+        
+        if(array_key_exists('product_price', $update_data)){
+            try {
+                $product->product_price = $update_data['product_price'];
+                $product->save();
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $product
+                ], 200);
+            } catch (Exception $e) {
+                return response()->json([
+                    'status' => 'failed',
+                    'data' => []
+                ], 400);
+            }
+        }
+
+        return response()->json([
+            'status' => 'failed',
+            'message' => 'Unknown request',
+            'data' => []
+        ], 400);
+
     }
 
     /**
@@ -60,14 +175,26 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
+        $product = Products::find($id);
+        if($product == null){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Resource not found',
+                'data' => []
+            ], 404);
+        }
 
-    private function validateProductInputRequest(Request $request){
-        return Validator::make($request->all(), [
-            'product_name' => 'required|alpha_dash|unique:product_list,product_name|max:255',
-            'product_stock' => 'required|integer',
-            'product_price' => 'required|integer'
-        ]);
+        try {
+            $product->delete();
+            return response()->json([
+                'status' => 'success',
+                'data' => $product
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'data' => []
+            ], 200);
+        }
     }
 }
