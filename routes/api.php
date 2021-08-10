@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsersAuthentication;
@@ -37,6 +38,14 @@ Route::middleware(['auth:api'])->group(function (){
         Route::get('/gudang/product/{id}', [ProductsController::class, 'show']);
         Route::put('/gudang/product/{id}', [ProductsController::class, 'update']);
         Route::delete('/gudang/product/{id}', [ProductsController::class, 'destroy']);
+    });
+
+    Route::middleware(['role:kasir'])->group(function(){
+        Route::get('/kasir/member', [MemberController::class, 'index']);
+        Route::post('/kasir/member', [MemberController::class, 'store']);
+        Route::get('/kasir/member/{id}', [MemberController::class, 'show']);
+        Route::put('/kasir/member/{id}', [MemberController::class, 'update']);
+        Route::delete('/kasir/member/{id}', [MemberController::class, 'destroy']);
     });
 
     Route::post('/logout', [UsersAuthentication::class, 'logout']);
