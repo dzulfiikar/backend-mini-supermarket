@@ -126,7 +126,7 @@ class MemberController extends Controller
         try {
             $member->delete();
             return response()->json([
-                'status' => 'failed',
+                'status' => 'success',
                 'message' => 'Member has been deleted',
                 'data' => []
             ], 200);
