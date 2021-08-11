@@ -26,7 +26,7 @@ class VoucherUpdateRequest extends FormRequest
     {
         return [
             'voucher_name' => ['required', Rule::unique('vouchers', 'voucher_id')->ignore($this->voucher->voucher_id, 'voucher_id')],
-            'voucher_discount' => ['present', 'numeric'],
+            'voucher_discount' => ['present','nullable', 'numeric'],
             'voucher_value' => ['required', 'numeric'],
             'voucher_point' => ['required', 'numeric']
         ];

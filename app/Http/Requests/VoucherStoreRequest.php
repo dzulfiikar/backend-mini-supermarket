@@ -25,7 +25,7 @@ class VoucherStoreRequest extends FormRequest
     {
         return [
             'voucher_name' => ['required', 'unique:vouchers,voucher_name'],
-            'voucher_discount' => ['present', 'numeric'],
+            'voucher_discount' => ['present','nullable', 'numeric'],
             'voucher_value' => ['required', 'numeric'],
             'voucher_point' => ['required', 'numeric']
         ];

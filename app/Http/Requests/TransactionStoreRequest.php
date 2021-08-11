@@ -26,8 +26,8 @@ class TransactionStoreRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'exists:users,id'],
-            'member_id' => ['present', 'exists:members,member_id'],
-            'voucher_id' => ['present', 'exists:vouchers,voucher_id'],
+            'member_id' => ['present','nullable', 'exists:members,member_id'],
+            'voucher_id' => ['present', 'nullable','exists:vouchers,voucher_id'],
             'total_price' => ['required', 'numeric'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'numeric', 'exists:products,product_id'],

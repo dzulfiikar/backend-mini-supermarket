@@ -66,7 +66,6 @@ Route::middleware(['auth:api'])->group(function (){
         // Transaction 
         Route::get('/kasir/transaction/product/{product}', [TransactionController::class, 'showProduct']);
         Route::post('/kasir/transaction/member/{member}', [TransactionController::class, 'getMemberAndVoucher']);
-        
         Route::post('/kasir/transaction/', [TransactionController::class, 'store']);
     });
 
