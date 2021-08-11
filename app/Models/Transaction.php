@@ -17,4 +17,13 @@ class Transaction extends Model
         'voucher_id',
         'total_price'
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'transaction_id';
+    }
+
+    public function getTransactionCart(){
+        return $this->hasMany(Cart::class, 'transaction_id', 'transaction_id');
+    }
 }

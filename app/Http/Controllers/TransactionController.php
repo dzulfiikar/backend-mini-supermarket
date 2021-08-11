@@ -143,7 +143,17 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        $items = $transaction->getTransactionCart()->get(['product_id', 'quantity']);
+        foreach($items as $item){
+            $name = Products::find($item->product_id)->get(['product_name'])->first();
+            $item['product_name'] = $name->product_name;
+        }
+
+        $transaction['items'] = $items;
+        return response()->json([
+            'status' => 'success',
+            'data' => $transaction
+        ], 200);
     }
 
     public function showProduct(Products $product){
