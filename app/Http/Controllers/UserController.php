@@ -58,17 +58,8 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::find($id);
-        if($user == null){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Resource not found',
-                'data' => []
-            ], 404);
-        }
-
         return response()->json([
             'status' => 'success',
             'data' => $user
@@ -82,25 +73,34 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserUpdateRequest $request, $id)
+    public function update(UserUpdateRequest $request, User $user)
     {
-        $user_data = User::find($id);
-        if($user_data == null){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Resource Not Found',
-                'data' => []
-            ], 404);
-        }
-
         $array_data = $request->validated();
-        if(array_key_exists('name', $array_data)){
+
+        if(array_key_exists('name', $array_data) && array_key_exists('password', $array_data)){
             try {
-                $user_data->name = $array_data['name'];
-                $user_data->save();
+                $user->name = $array_data['name'];
+                $user->password = bcrypt($array_data['password']);
+                $user->save();
                 return response()->json([
                     'status' => 'success',
-                    'data' => $user_data
+                    'data' => $user
+                ], 200);
+            } catch (Exception $e) {
+                return response()->json([
+                    'status' => 'failed',
+                    'data' => []
+                ], 400);
+            }
+        }
+
+        if(array_key_exists('name', $array_data)){
+            try {
+                $user->name = $array_data['name'];
+                $user->save();
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $user
                 ], 200);
             } catch (Exception $e) {
                 return response()->json([
@@ -112,11 +112,11 @@ class UserController extends Controller
 
         if(array_key_exists('password', $array_data)){
             try {
-                $user_data->password = bcrypt($array_data['password']);
-                $user_data->save();
+                $user->password = bcrypt($array_data['password']);
+                $user->save();
                 return response()->json([
                     'status' => 'success',
-                    'data' => $user_data
+                    'data' => $user
                 ], 200);
             } catch (Exception $e) {
                 return response()->json([
@@ -139,17 +139,8 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $user = User::find($id);
-        if($user == null){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Resource Not Found',
-                'data' => []
-            ], 404);
-        }
-
         try {
             $user->delete();
             return response()->json([
