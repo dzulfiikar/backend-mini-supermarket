@@ -52,20 +52,18 @@ class MemberController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Member $member)
     {
-        $member = Member::find($id);
-        if($member == null){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Resource not found',
-                'data' => []
-            ], 404);
-        }
-
         return response()->json([
             'status' => 'success',
             'data' => $member
+        ], 200);
+    }
+
+    public function showAvailableVouchers(Member $member){
+        return response()->json([
+            'status '=> 'success',
+            'data' => Member::getAvailableVouchers($member)
         ], 200);
     }
 
@@ -76,16 +74,8 @@ class MemberController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(MemberUpdateRequest $request, $id)
+    public function update(MemberUpdateRequest $request, Member $member)
     {
-        $member = Member::find($id);
-        if($member == null){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Resource not found',
-                'data' => []
-            ], 404);
-        }
         $update_data = $request->validated();
         try {
             $member->member_name = $update_data['member_name'];
@@ -111,18 +101,8 @@ class MemberController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Member $member)
     {
-        $member = Member::find($id);
-
-        if($member == null){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Resouce not found',
-                'data' => []
-            ], 404);
-        }
-
         try {
             $member->delete();
             return response()->json([
