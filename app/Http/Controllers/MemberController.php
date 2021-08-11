@@ -60,13 +60,6 @@ class MemberController extends Controller
         ], 200);
     }
 
-    public function showAvailableVouchers(Member $member){
-        return response()->json([
-            'status '=> 'success',
-            'data' => Member::getAvailableVouchers($member)
-        ], 200);
-    }
-
     /**
      * Update the specified resource in storage.
      *

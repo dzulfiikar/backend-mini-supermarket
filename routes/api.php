@@ -55,7 +55,6 @@ Route::middleware(['auth:api'])->group(function (){
         Route::get('/kasir/member/{member}', [MemberController::class, 'show']);
         Route::put('/kasir/member/{member}', [MemberController::class, 'update']);
         Route::delete('/kasir/member/{member}', [MemberController::class, 'destroy']);
-        Route::get('/kasir/member/{member}/voucher', [MemberController::class, 'showAvailableVouchers']);
 
         // manage voucher
         Route::get('/kasir/voucher', [VoucherController::class, 'index']);

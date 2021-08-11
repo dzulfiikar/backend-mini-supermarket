@@ -19,4 +19,9 @@ class Member extends Model
         'member_phone',
         'member_point'
     ];
+
+    public function getRouteKeyName()
+    {
+        return "member_id";
+    }
 }
