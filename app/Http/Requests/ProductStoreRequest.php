@@ -25,7 +25,6 @@ class ProductStoreRequest extends FormRequest
     {
         return [
             'product_name' => ['required', 'unique:products,product_name'],
-            'product_stock' => ['required', 'numeric'],
             'product_price' => ['required', 'numeric']
         ];
     }
@@ -35,8 +34,6 @@ class ProductStoreRequest extends FormRequest
         return [
             'product_name.required' => 'A product name is required',
             'product_name.unique' => 'The product name is exist',
-            'product_stock.required' => 'The product must have stock',
-            'product_stock.numeric' => 'The product stock must be a valid number',
             'product_price.required' => 'The product must have price',
             'product_price.numeric' => 'The product price must be a valid number'
         ];

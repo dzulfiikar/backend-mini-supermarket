@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProductUpdateRequest extends FormRequest
 {
@@ -23,10 +24,8 @@ class ProductUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route('id');
         return [
-            'product_name' => ['required', 'unique:products,product_name,'.$id.',product_id'],
-            'product_stock' => ['required', 'numeric'],
+            'product_name' => ['required', Rule::unique('products', 'product_id')->ignore($this->product->product_id, 'product_id')],
             'product_price' => ['required', 'numeric']
         ];
     }
@@ -35,7 +34,6 @@ class ProductUpdateRequest extends FormRequest
     {
         return [
             'product_name.unique' => 'The product name is exist',
-            'product_stock.numeric' => 'The product stock must be a valid number',
             'product_price.numeric' => 'The product price must be a valid number'
         ];
     }

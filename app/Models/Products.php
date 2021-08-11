@@ -14,8 +14,15 @@ class Products extends Model
 
     protected $fillable = [
         'product_name',
-        'product_stock',
         'product_price'
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'product_id';
+    }
+
+    public function inventory(){
+        return $this->hasMany(Inventory::class, 'product_id', 'product_id');
+    }
 }

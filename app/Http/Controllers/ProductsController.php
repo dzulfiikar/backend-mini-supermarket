@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductStoreInventoryRequest;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Models\Inventory;
 use App\Models\Products;
 use Exception;
 use Illuminate\Http\Request;
@@ -54,18 +56,8 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Products $product)
     {
-        $product = Products::find($id);
-
-        if($product == null){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Resource not found',
-                'data' => []
-            ], 404);
-        }
-
         return response()->json([
             'status' => 'success',
             'data' => $product
@@ -79,23 +71,12 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductUpdateRequest $request, $id)
+    public function update(ProductUpdateRequest $request, Products $product)
     {
-        $product = Products::find($id);
-        if($product == null){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Resource not found',
-                'data' => []
-            ], 404);
-        }
-
         $update_data = $request->validated();
-
         try {
             $product->product_name = $update_data['product_name'];
             $product->product_price = $update_data['product_price'];
-            $product->product_stock = $update_data['product_stock'];
             $product->save();
             return response()->json([
                 'status' => 'success',
@@ -122,17 +103,8 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Products $product)
     {
-        $product = Products::find($id);
-        if($product == null){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Resource not found',
-                'data' => []
-            ], 404);
-        }
-
         try {
             $product->delete();
             return response()->json([
