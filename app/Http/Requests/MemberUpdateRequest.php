@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class MemberUpdateRequest extends FormRequest
 {
@@ -23,11 +24,10 @@ class MemberUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route('id');
         return [
             'member_name' => ['required'],
             'member_address' => ['required'],
-            'member_phone' => ['required', 'numeric', 'unique:members,member_phone,'.$id.',member_id'], 
+            'member_phone' => ['required', 'numeric', Rule::unique('members', 'member_id')->ignore($this->member->member_id, 'member_id')], 
         ];
     }
 
