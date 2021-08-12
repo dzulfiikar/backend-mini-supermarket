@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class VoucherStoreRequest extends FormRequest
 {
@@ -27,7 +28,8 @@ class VoucherStoreRequest extends FormRequest
             'voucher_name' => ['required', 'unique:vouchers,voucher_name'],
             'voucher_discount' => ['present','nullable', 'numeric'],
             'voucher_value' => ['required', 'numeric'],
-            'voucher_point' => ['required', 'numeric']
+            'voucher_point' => ['required', 'numeric'],
+            'voucher_type' => ['required', Rule::in(['discount', 'fixed'])]
         ];
     }
 
@@ -41,7 +43,8 @@ class VoucherStoreRequest extends FormRequest
             'voucher_value.required' => 'Voucher value is required',
             'voucher_value.numeric' => 'Voucher value must be numeric',
             'voucher_point.required' => 'Voucher point is required',
-            'voucher_point.numeric' => 'Voucher point must be numeric'
+            'voucher_point.numeric' => 'Voucher point must be numeric',
+            'voucher_type.required' => 'Voucher point is required'
         ];
     }
 }

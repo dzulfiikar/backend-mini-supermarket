@@ -75,6 +75,7 @@ class VoucherController extends Controller
             $voucher->voucher_discount = $update_data['voucher_discount'];
             $voucher->voucher_value = $update_data['voucher_value'];
             $voucher->voucher_point = $update_data['voucher_point'];
+            $voucher->voucher_type = $update_data['voucher_type'];
             $voucher->save();
 
             return response()->json([

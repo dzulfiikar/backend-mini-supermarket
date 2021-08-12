@@ -13,7 +13,8 @@ class Voucher extends Model
     protected $fillable = [
         'voucher_name',
         'voucher_value',
-        'voucher_point'
+        'voucher_point',
+        'voucher_type'
     ];
 
     public function getRouteKeyName()
