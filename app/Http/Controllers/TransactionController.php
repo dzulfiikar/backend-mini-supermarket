@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use App\Models\Voucher;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -37,43 +38,46 @@ class TransactionController extends Controller
     public function store(TransactionStoreRequest $request)
     {
         $store_data = $request->validated();
-        $transaction = Transaction::create([
-            'user_id' => $store_data['user_id'],
-            'member_id' => $store_data['member_id'],
-            'voucher_id' => $store_data['voucher_id'],
-            'total_price' => $store_data['total_price']
-        ]);
+        try {
+            DB::beginTransaction();
+            $transaction = Transaction::create([
+                'user_id' => $store_data['user_id'],
+                'member_id' => $store_data['member_id'],
+                'voucher_id' => $store_data['voucher_id'],
+                'total_price' => $store_data['total_price'],
+                'accumulated_points' => $store_data['accumulated_points']
+            ]);
+            if($store_data['member_id'] != null){
+                $member = Member::find($store_data['member_id']);
+                $member->member_point = $store_data['accumulated_points'];
+                $member->save();
+            }
 
-        $fifoResponse = $this->inputItemsToCartAndUpdateStockByFIFO($store_data['items'], $transaction->transaction_id);
-        $transaction['items'] = $fifoResponse;
-        return response()->json([
-            'status' => 'success',
-            'data' => $transaction,
+            $fifoResponse = $this->inputItemsToCartAndUpdateStockByFIFO($store_data['items'], $transaction->transaction_id);
+            
+            if($fifoResponse['status'] == "failed"){
+                throw new Exception($fifoResponse['message']);
+            }
+
+            $transaction['items'] = $fifoResponse;
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'data' => $transaction,
             ], 201);
-        // try {
-        //     $transaction = Transaction::create([
-        //         'user_id' => $store_data['user_id'],
-        //         'member_id' => $store_data['member_id'],
-        //         'voucher_id' => $store_data['voucher_id'],
-        //         'total_price' => $store_data['total_price']
-        //     ]);
-
-        //     $fifoResponse = $this->inputItemsToCartAndUpdateStockByFIFO($store_data['items'], $transaction->transaction_id);
-        //     $transaction['items'] = $fifoResponse;
-        //     return response()->json([
-        //         'status' => 'success',
-        //         'data' => $transaction,
-        //         ], 201);
-        // } catch (Exception $e) {
-        //     return response()->json([
-        //         'status' => 'failed',
-        //         'data' => []
-        //     ], 400);
-        // }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'failed',
+                'message' => $e,
+                'data' => []
+            ], 400);
+        }
     }
 
     private function  inputItemsToCartAndUpdateStockByFIFO($items, $transaction_id){
         $return_items = [];
+        $status = [];
         // loop array items
         foreach($items as $item){
             // find all stock in inventory
@@ -114,25 +118,32 @@ class TransactionController extends Controller
                 $cart = Cart::create([
                     'transaction_id' => $transaction_id,
                     'product_id' => $item['product_id'],
-                    'quantity' => $item['qty']
+                    'quantity' => $item['qty'],
+                    'price_per_qty' => $item['price_per_qty']
                 ]);
 
                 $product_info = Products::where('product_id', $cart->product_id)->get('product_name')->first();
                 array_push($return_items, [
                     'product_id' => $cart->product_id,
                     'product_name' => $product_info->product_name,
-                    'quantity' => $cart->quantity
+                    'quantity' => $cart->quantity,
+                    'price_per_qty' => $cart->price_per_qty
                 ]);
             }else {
                 // if qty exceeds stock
-                return response()->json([
+                $status = [
                     'status' => 'failed',
                     'message' => 'Qty exceeds inventory',
                     'data' => $item
-                ], 400);
+                ];
             }
         }
-        return $return_items;
+        $status = [
+            'status' => 'success',
+            'message' => [],
+            'data' => $return_items
+        ];
+        return $status; 
     }
 
     /**
@@ -163,6 +174,7 @@ class TransactionController extends Controller
             'data' => [
                 'product_id' => $product->product_id,
                 'product_name' => $product->product_name,
+                'product_price' => $product->product_price,
                 'product_stock' => $product_stock
             ]
         ], 200);

@@ -15,7 +15,8 @@ class Transaction extends Model
         'user_id',
         'member_id',
         'voucher_id',
-        'total_price'
+        'total_price',
+        'accumulated_points'
     ];
 
     public function getRouteKeyName()

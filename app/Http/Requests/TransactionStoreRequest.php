@@ -28,10 +28,12 @@ class TransactionStoreRequest extends FormRequest
             'user_id' => ['required', 'exists:users,id'],
             'member_id' => ['present','nullable', 'exists:members,member_id'],
             'voucher_id' => ['present', 'nullable','exists:vouchers,voucher_id'],
+            'accumulated_points' => ['required'],
             'total_price' => ['required', 'numeric'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'numeric', 'exists:products,product_id'],
-            'items.*.qty' => ['required', 'numeric', 'min:1', new ProductQuantity('items.*.product_id')]
+            'items.*.qty' => ['required', 'numeric', 'min:1', new ProductQuantity('items.*.product_id')],
+            'items.*.price_per_qty' => ['required', 'numeric']
         ];
     }
 
@@ -54,7 +56,9 @@ class TransactionStoreRequest extends FormRequest
             'items.*.product_id.exists' => 'Product id does not exist',
             'items.*.qty.required' => 'Product qty is required',
             'items.*.qty.numeric' => 'Product qty must be a number',
-            'items.*.qty.min' => 'Product qty must not have 0 value'
+            'items.*.qty.min' => 'Product qty must not have 0 value',
+            'items.*.price_per_qty.required' => 'Product price is required',
+            'items.*.price_per_qty.numeric' => 'Product price must be a number',
         ];
     }
 }
