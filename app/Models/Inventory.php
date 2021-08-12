@@ -13,7 +13,9 @@ class Inventory extends Model
 
     protected $fillable = [
         'product_id',
-        'product_stock'
+        'product_stock',
+        'created_at',
+        'updated_at'
     ];
 
     public function getRouteKeyName()

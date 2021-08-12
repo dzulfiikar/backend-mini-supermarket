@@ -24,7 +24,8 @@ class InventoryStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_stock' => ['required', 'numeric']
+            'product_stock' => ['required', 'numeric'],
+            'created_at' => ['required', 'date']
         ];
     }
 
@@ -32,7 +33,9 @@ class InventoryStoreRequest extends FormRequest
     {
         return [
             'product_stock.required' => 'Product stock is required',
-            'product_stock.numeric' => 'Must be a valid numerical'
+            'product_stock.numeric' => 'Must be a valid numerical',
+            'created_at.required' => 'Created date is required',
+            'created_at.date' => 'Created date field must be a valid date',
         ];
     }
 }
