@@ -15,7 +15,8 @@ class Cart extends Model
     protected $fillable = [
         'transaction_id',
         'product_id',
-        'quantity'
+        'quantity',
+        'price_per_qty'
     ];
 
     public function getRouteKeyName()
