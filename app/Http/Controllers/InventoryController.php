@@ -33,6 +33,7 @@ class InventoryController extends Controller
     {
         $store_data = $request->validated();
         $store_data['product_id'] = $product->product_id;
+        $store_data['remaining_stock'] = $store_data['product_stock'];
         try {
             $data = Inventory::create($store_data);
             return response()->json([
