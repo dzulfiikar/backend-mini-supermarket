@@ -3,6 +3,7 @@
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsersAuthentication;
@@ -68,6 +69,12 @@ Route::middleware(['auth:api'])->group(function (){
         Route::post('/kasir/transaction/member/{member}', [TransactionController::class, 'getMemberAndVoucher']);
         Route::post('/kasir/transaction/', [TransactionController::class, 'store']);
         Route::get('/kasir/transaction/{transaction}', [TransactionController::class, 'show']);
+
+        // Report
+        Route::post('/kasir/report/transactions', [ReportController::class, 'showTransactions']);
+        Route::post('/kasir/report/stocks', [ReportController::class, 'showStocksByMonth']);
+        Route::post('/kasir/report/profits', [ReportController::class, 'showStocksProfit']);
+
     });
 
     Route::post('/logout', [UsersAuthentication::class, 'logout']);
