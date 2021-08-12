@@ -6,6 +6,7 @@ use App\Http\Requests\TransactionMemberAndVoucherRequest;
 use App\Http\Requests\TransactionStoreRequest;
 use App\Models\Cart;
 use App\Models\Inventory;
+use App\Models\InventoryOut;
 use App\Models\Member;
 use App\Models\Products;
 use App\Models\Transaction;
@@ -81,8 +82,8 @@ class TransactionController extends Controller
         // loop array items
         foreach($items as $item){
             // find all stock in inventory
-            $inventories = Inventory::where('product_id', $item['product_id'])->where('product_stock', '>', '0')->orderBy('created_at')->get();
-            $stock_all = Inventory::where('product_id', $item['product_id'])->where('product_stock', '>', '0')->orderBy('created_at')->get('product_stock')->sum('product_stock');
+            $inventories = Inventory::where('product_id', $item['product_id'])->where('remaining_stock', '>', '0')->orderBy('created_at')->get();
+            $stock_all = Inventory::where('product_id', $item['product_id'])->where('remaining_stock', '>', '0')->orderBy('created_at')->get('remaining_stock')->sum('remaining_stock');
             
             // get post qty
             $qty = $item['qty'];
@@ -91,7 +92,7 @@ class TransactionController extends Controller
                 foreach($inventories as $inventory){
                     // get inventory info
                     $date = $inventory['created_at'];
-                    $stock = $inventory['product_stock'];
+                    $stock = $inventory['remaining_stock'];
                     
                     // if qty > 0
                     if($qty > 0){
@@ -109,9 +110,15 @@ class TransactionController extends Controller
                             $stock_update = $stock - $temp;
                         }
 
+                        InventoryOut::create([
+                            'inventory_id' => $inventory['inventory_id'],
+                            'qty' => $stock_update,
+                            'transaction_id' => $transaction_id
+                        ]);
+
                         Inventory::where('product_id', $inventory['product_id'])
                         ->where('created_at', $date)
-                        ->update(['product_stock' => $stock_update]);
+                        ->update(['remaining_stock' => $stock_update]);
                     }
                 }
 
@@ -168,7 +175,7 @@ class TransactionController extends Controller
     }
 
     public function showProduct(Products $product){
-        $product_stock = $product->inventory()->get('product_stock')->sum('product_stock');
+        $product_stock = $product->inventory()->get('remaining_stock')->sum('remaining_stock');
         return response()->json([
             'status' => 'success',
             'data' => [
