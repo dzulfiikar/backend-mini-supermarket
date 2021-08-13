@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
@@ -47,6 +48,11 @@ Route::middleware(['auth:api'])->group(function (){
 
         // manage inventory
         Route::post('/gudang/product/{product}/inventory', [InventoryController::class, 'store']);
+
+        // notification
+        Route::get('/gudang/notifications', [NotificationController::class, 'index']);
+        Route::get('/gudang/notifications/unread', [NotificationController::class, 'showUnreadNotifications']);
+        Route::post('/gudang/notifications', [NotificationController::class, 'setNotificationRead']);
     });
 
     Route::middleware(['role:kasir'])->group(function(){
