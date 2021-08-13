@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\LowProduct;
 use App\Http\Requests\TransactionMemberAndVoucherRequest;
 use App\Http\Requests\TransactionStoreRequest;
 use App\Models\Cart;
@@ -149,7 +150,7 @@ class TransactionController extends Controller
                         'product_stock' => $remaining_stock,
                         'message' => "Low stock on ".$product_info->product_name.". Please restock immediately"
                     ];
-                    Notification::send($gudang_users, new LowProductStock($data));
+                    event(new LowProduct($data));
                 }
 
             }else {
