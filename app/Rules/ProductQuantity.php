@@ -32,10 +32,10 @@ class ProductQuantity implements Rule
         $products = request()->input($this->referredField);
         foreach($products as $product){
             $available_stocks = Inventory::where('product_id', $product)->where('remaining_stock', '>', 0)->get('remaining_stock')->sum('remaining_stock');
-            if($available_stocks <= $value){
-                return false;
-            }else {
+            if($available_stocks >= $value){
                 return true;
+            }else {
+                return false;
             }
         }
         

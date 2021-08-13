@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Rules\ProductQuantity;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\ValidationException;
 
 class TransactionStoreRequest extends FormRequest
 {
@@ -16,6 +17,8 @@ class TransactionStoreRequest extends FormRequest
     {
         return true;
     }
+
+    protected $validatedData;
 
     /**
      * Get the validation rules that apply to the request.
@@ -31,7 +34,7 @@ class TransactionStoreRequest extends FormRequest
             'accumulated_points' => ['required'],
             'total_price' => ['required', 'numeric'],
             'items' => ['required', 'array', 'min:1'],
-            'items.*.product_id' => ['required', 'numeric', 'exists:products,product_id'],
+            'items.*.product_id' => ['required',  'numeric', 'exists:products,product_id'],
             'items.*.qty' => ['required', 'numeric', 'min:1', new ProductQuantity('items.*.product_id')],
             'items.*.price_per_qty' => ['required', 'numeric']
         ];
@@ -60,5 +63,10 @@ class TransactionStoreRequest extends FormRequest
             'items.*.price_per_qty.required' => 'Product price is required',
             'items.*.price_per_qty.numeric' => 'Product price must be a number',
         ];
+    }
+
+    public function validated()
+    {
+        return $this->validatedData ?: $this->validatedData = parent::validated();
     }
 }

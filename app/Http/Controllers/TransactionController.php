@@ -10,10 +10,13 @@ use App\Models\InventoryOut;
 use App\Models\Member;
 use App\Models\Products;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\Voucher;
+use App\Notifications\LowProductStock;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class TransactionController extends Controller
 {
@@ -136,6 +139,19 @@ class TransactionController extends Controller
                     'quantity' => $cart->quantity,
                     'price_per_qty' => $cart->price_per_qty
                 ]);
+
+                $remaining_stock = Inventory::where('product_id', $item['product_id'])->where('remaining_stock', '>', '0')->orderBy('created_at')->get('remaining_stock')->sum('remaining_stock');
+                if($remaining_stock <= 5){
+                    $gudang_users = User::getAllGudangUsers();
+                    $data = [
+                        'product_id' => $cart->product_id,
+                        'product_name' => $product_info->product_name,
+                        'product_stock' => $remaining_stock,
+                        'message' => "Low stock on ".$product_info->product_name.". Please restock immediately"
+                    ];
+                    Notification::send($gudang_users, new LowProductStock($data));
+                }
+
             }else {
                 // if qty exceeds stock
                 $status = [
